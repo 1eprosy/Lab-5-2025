@@ -320,9 +320,9 @@ public class ArrayTabulatedFunction implements TabulatedFunction, Serializable {
         if (obj instanceof ArrayTabulatedFunction) {
             ArrayTabulatedFunction other = (ArrayTabulatedFunction) obj;
 
-            // Сравниваем точки напрямую
+            // Сравниваем точки напрямую, используя метод equals из FunctionPoint
             for (int i = 0; i < size; i++) {
-                if (!pointsAreEqual(this.points[i], other.points[i])) {
+                if (!this.points[i].equals(other.points[i])) {
                     return false;
                 }
             }
@@ -333,7 +333,8 @@ public class ArrayTabulatedFunction implements TabulatedFunction, Serializable {
                     FunctionPoint myPoint = this.points[i];
                     FunctionPoint otherPoint = otherFunc.getPoint(i);
 
-                    if (!pointsAreEqual(myPoint, otherPoint)) {
+                    // Используем метод equals из FunctionPoint
+                    if (!myPoint.equals(otherPoint)) {
                         return false;
                     }
                 }
@@ -356,10 +357,7 @@ public class ArrayTabulatedFunction implements TabulatedFunction, Serializable {
 
         // Добавляем хэш-код каждой точки
         for (int i = 0; i < size; i++) {
-            result ^= points[i].hashCode();
-
-            // Сдвигаем результат для лучшего распределения
-            result = Integer.rotateLeft(result, 1);
+            result = 31 * result + points[i].hashCode();
         }
 
         return result;

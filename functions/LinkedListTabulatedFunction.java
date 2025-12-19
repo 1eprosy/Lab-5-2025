@@ -400,7 +400,8 @@ public class LinkedListTabulatedFunction implements TabulatedFunction, Serializa
             Node otherCurrent = other.head;
 
             while (thisCurrent != null && otherCurrent != null) {
-                if (!pointsAreEqual(thisCurrent.point, otherCurrent.point)) {
+                // Используем метод equals из FunctionPoint
+                if (!thisCurrent.point.equals(otherCurrent.point)) {
                     return false;
                 }
                 thisCurrent = thisCurrent.next;
@@ -418,7 +419,8 @@ public class LinkedListTabulatedFunction implements TabulatedFunction, Serializa
                 while (thisCurrent != null) {
                     FunctionPoint otherPoint = otherFunc.getPoint(index);
 
-                    if (!pointsAreEqual(thisCurrent.point, otherPoint)) {
+                    // Используем метод equals из FunctionPoint
+                    if (!thisCurrent.point.equals(otherPoint)) {
                         return false;
                     }
 
@@ -444,10 +446,7 @@ public class LinkedListTabulatedFunction implements TabulatedFunction, Serializa
 
         Node current = head;
         while (current != null) {
-            result ^= current.point.hashCode();
-
-            // Сдвигаем результат для лучшего распределения
-            result = Integer.rotateLeft(result, 1);
+            result = 31 * result + current.point.hashCode();
             current = current.next;
         }
 
@@ -485,6 +484,7 @@ public class LinkedListTabulatedFunction implements TabulatedFunction, Serializa
         }
     }
 
+
     // Вспомогательные приватные методы
     private double linearInterpolation(FunctionPoint p1, FunctionPoint p2, double x) {
         double x1 = p1.getX();
@@ -499,8 +499,5 @@ public class LinkedListTabulatedFunction implements TabulatedFunction, Serializa
     /**
      * Вспомогательный метод для сравнения двух точек с учетом погрешности
      */
-    private boolean pointsAreEqual(FunctionPoint p1, FunctionPoint p2) {
-        return Math.abs(p1.getX() - p2.getX()) < EPSILON &&
-                Math.abs(p1.getY() - p2.getY()) < EPSILON;
-    }
+
 }

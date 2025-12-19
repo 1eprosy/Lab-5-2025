@@ -7,7 +7,6 @@ public class FunctionPoint implements Serializable {
     private static final long serialVersionUID = 1L;
     private double x;
     private double y;
-    private static final double EPSILON = 1e-10; // Точность для сравнения double
 
 
     public FunctionPoint(double x, double y) {
@@ -69,9 +68,9 @@ public class FunctionPoint implements Serializable {
         // Приводим к типу FunctionPoint
         FunctionPoint other = (FunctionPoint) obj;
 
-        // Сравниваем координаты с учетом погрешности для double
-        return Math.abs(this.x - other.x) < EPSILON &&
-                Math.abs(this.y - other.y) < EPSILON;
+        // Используем Double.compare для точного сравнения double
+        return Double.compare(this.x, other.x) == 0 &&
+                Double.compare(this.y, other.y) == 0;
     }
 
     /**
@@ -80,22 +79,10 @@ public class FunctionPoint implements Serializable {
      */
     @Override
     public int hashCode() {
-        // Преобразуем каждую координату в long битовое представление
-        long xBits = Double.doubleToLongBits(x);
-        long yBits = Double.doubleToLongBits(y);
+        // Используем Objects.hash для согласованности с equals
+        return Objects.hash(x, y);
 
-        // Разбиваем каждый long на два int (старшие и младшие 4 байта)
-        int x1 = (int)(xBits >> 32);        // Старшие 4 байта x
-        int x2 = (int)(xBits & 0xFFFFFFFFL); // Младшие 4 байта x
 
-        int y1 = (int)(yBits >> 32);        // Старшие 4 байта y
-        int y2 = (int)(yBits & 0xFFFFFFFFL); // Младшие 4 байта y
-
-        // Применяем XOR для всех компонентов
-        return x1 ^ x2 ^ y1 ^ y2;
-
-        // Альтернативная, более простая реализация (если допускается):
-        // return Objects.hash(x, y);
     }
 
     /**
